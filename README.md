@@ -115,3 +115,4 @@ git commit -m "Add IT-owned approved-job SharePoint MCP connector"
 Add the authorized company remote afterward. Do not use a personal public repo
 for company code, credentials, configuration, or engineering content.
 # resolut-sharepoint-mcp
+# resolut-sharepoint-mcp
