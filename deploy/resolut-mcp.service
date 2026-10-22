@@ -1,0 +1,38 @@
+[Unit]
+Description=Resolut approved job-site MCP reader
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=resolut-mcp
+Group=resolut-mcp
+WorkingDirectory=/opt/resolut-mcp/current
+Environment=PYTHONDONTWRITEBYTECODE=1
+Environment=PYTHONUNBUFFERED=1
+Environment=PYTHONNOUSERSITE=1
+EnvironmentFile=/etc/resolut-mcp/live.env
+ExecStart=/opt/resolut-mcp/current/.venv/bin/python -m resolut_mcp --env-file /etc/resolut-mcp/live.env serve --require-live
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=30
+KillMode=control-group
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+LockPersonality=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+MemoryMax=1G
+TasksMax=64
+LimitCORE=0
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

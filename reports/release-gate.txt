@@ -1,0 +1,3 @@
+Missing mcp; install requirements before release.
+
+Exit status: 1 (expected failure while MCP/MSAL are unavailable)

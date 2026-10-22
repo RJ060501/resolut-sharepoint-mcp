@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "jobs": [
+    {
+      "job_id": "1001",
+      "site_id": "example.sharepoint.com,10000000-0000-4000-8000-000000001001,20000000-0000-4000-8000-000000001001",
+      "site_url": "https://example.sharepoint.com/sites/job1001",
+      "display_name": "REPLACE_WITH_REVIEWED_JOB",
+      "decision": "pending",
+      "owner": "REPLACE_WITH_OWNER",
+      "approved_by": null,
+      "approved_at": null,
+      "expires_at": null,
+      "notes": "Replace all IDs and hostname; approval is not granted by this example."
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+# Replace the hostname with a subdomain of your Entra-verified company domain.
+# Point DNS to this company-approved host before starting automatic HTTPS.
+mcp.your-verified-domain.example {
+    @connector path /mcp /.well-known/* /healthz /readyz
+    handle @connector {
+        reverse_proxy 127.0.0.1:8000
+    }
+    handle {
+        respond "Not found" 404
+    }
+    header {
+        X-Content-Type-Options nosniff
+        Cache-Control "no-store"
+        -Server
+    }
+    # Deliberately do not enable request-body/header/access logging.
+}

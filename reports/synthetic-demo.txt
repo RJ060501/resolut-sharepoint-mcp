@@ -1,0 +1,53 @@
+SYNTHETIC POLICY DEMO -- no Microsoft, Claude, or MCP transport calls
+Human Alice can open excluded job 1002: True
+{
+  "jobs": [
+    {
+      "job_id": "1001",
+      "name": "Synthetic Job 1001",
+      "site_url": "https://example.sharepoint.com/sites/job1001"
+    }
+  ],
+  "complete": true,
+  "note": "Only currently approved jobs visible to your Microsoft identity are listed."
+}
+{
+  "results": [
+    {
+      "document_id": "v1.WyIxMDAxIiwiZXhhbXBsZS5zaGFyZXBvaW50LmNvbSwxMDAwMDAwMC0wMDAwLTQwMDAtODAwMC0wMDAwMDAwMDEwMDEsMjAwMDAwMDAtMDAwMC00MDAwLTgwMDAtMDAwMDAwMDAxMDAxIiwiZHJpdmUtMTAwMSIsImh2YWMtdGV4dCJd",
+      "job_id": "1001",
+      "name": "approved_hvac.txt",
+      "source_url": "https://example.sharepoint.com/sites/job1001/Documents/approved_hvac.txt",
+      "etag": "\"synthetic-v1\"",
+      "modified": "2026-10-20T12:00:00Z"
+    },
+    {
+      "document_id": "v1.WyIxMDAxIiwiZXhhbXBsZS5zaGFyZXBvaW50LmNvbSwxMDAwMDAwMC0wMDAwLTQwMDAtODAwMC0wMDAwMDAwMDEwMDEsMjAwMDAwMDAtMDAwMC00MDAwLTgwMDAtMDAwMDAwMDAxMDAxIiwiZHJpdmUtMTAwMSIsImh2YWMtZG9jeCJd",
+      "job_id": "1001",
+      "name": "synthetic_hvac.docx",
+      "source_url": "https://example.sharepoint.com/sites/job1001/Documents/synthetic_hvac.docx",
+      "etag": "\"synthetic-v1\"",
+      "modified": "2026-10-20T12:00:00Z"
+    }
+  ],
+  "coverage": {
+    "complete_within_accessible_supported_content": true,
+    "limit_reasons": [],
+    "method": "Live keyword matching over filenames and folder paths, not file contents or semantic search.",
+    "note": "No persistent index. Each search re-enumerates approved accessible libraries. Narrow by job_id when coverage is limited."
+  }
+}
+{
+  "document_id": "v1.WyIxMDAxIiwiZXhhbXBsZS5zaGFyZXBvaW50LmNvbSwxMDAwMDAwMC0wMDAwLTQwMDAtODAwMC0wMDAwMDAwMDEwMDEsMjAwMDAwMDAtMDAwMC00MDAwLTgwMDAtMDAwMDAwMDAxMDAxIiwiZHJpdmUtMTAwMSIsImh2YWMtdGV4dCJd",
+  "job_id": "1001",
+  "name": "approved_hvac.txt",
+  "source_url": "https://example.sharepoint.com/sites/job1001/Documents/approved_hvac.txt",
+  "etag": "\"synthetic-v1\"",
+  "modified": "2026-10-20T12:00:00Z",
+  "text": "SYNTHETIC JOB 1001 - HVAC coordination notes\nTraining example only. Equipment schedule review is planned for Tuesday.\nThe fictional commissioning coordinator is Morgan Example.\n",
+  "format": "txt",
+  "pages": null,
+  "warnings": [],
+  "content_is_untrusted": true
+}
+Excluded-site connector request: unavailable

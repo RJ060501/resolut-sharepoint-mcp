@@ -1,0 +1,39 @@
+{
+  "bash syntax": {
+    "returncode": 0,
+    "expected": 0,
+    "passed": true,
+    "output": ""
+  },
+  "environment preflight": {
+    "returncode": 0,
+    "expected": 0,
+    "passed": true,
+    "output": "Interpreter: /opt/pyvenv/bin/python3; Python 3.13.5\nNote: this version is allowed by pyproject.toml; Python 3.12 remains the documented production baseline.\nEnvironment checks passed. No package installation or file changes performed."
+  },
+  "help": {
+    "returncode": 0,
+    "expected": 0,
+    "passed": true,
+    "output": "Usage: bash scripts/setup_ubuntu.sh [--check | --help]\n\nRun from any directory. Creates/reuses this repository's Linux .venv, installs\nrequirements and the editable package, and creates .env ONLY when absent.\nNo sudo, no tenant operations, no server exposure, no existing .env overwrite.\n\n--check  Check the interpreter/environment without installing or writing files.\nPYTHON_BIN=/path/to/python3.12 may override interpreter selection.\nPython 3.12 is the deployment baseline; package-supported versions are 3.12-3.14."
+  },
+  "reject unknown argument": {
+    "returncode": 2,
+    "expected": 2,
+    "passed": true,
+    "output": "Usage: bash scripts/setup_ubuntu.sh [--check | --help]\n\nRun from any directory. Creates/reuses this repository's Linux .venv, installs\nrequirements and the editable package, and creates .env ONLY when absent.\nNo sudo, no tenant operations, no server exposure, no existing .env overwrite.\n\n--check  Check the interpreter/environment without installing or writing files.\nPYTHON_BIN=/path/to/python3.12 may override interpreter selection.\nPython 3.12 is the deployment baseline; package-supported versions are 3.12-3.14."
+  },
+  "reject missing interpreter": {
+    "returncode": 1,
+    "expected": 1,
+    "passed": true,
+    "output": "Python not found: /nonexistent/resolut-python. Install an IT-approved Python 3.12 interpreter and venv support."
+  },
+  "VS Code JSON": {
+    "passed": true
+  },
+  "runtime and dependency files unchanged": {
+    "passed": true,
+    "files_compared": 18
+  }
+}

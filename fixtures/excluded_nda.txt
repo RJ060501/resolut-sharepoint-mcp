@@ -1,0 +1,3 @@
+SYNTHETIC EXCLUDED JOB 1002
+This text must not be returned through the connector.
+Synthetic marker: NDA-CANARY-ORBIT-724.

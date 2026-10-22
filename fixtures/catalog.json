@@ -1,0 +1,116 @@
+{
+  "sites": {
+    "1001": {
+      "users": [
+        "alice",
+        "bob"
+      ]
+    },
+    "1002": {
+      "users": [
+        "alice",
+        "bob"
+      ]
+    },
+    "1003": {
+      "users": [
+        "bob"
+      ]
+    },
+    "1004": {
+      "users": [
+        "alice",
+        "bob"
+      ]
+    }
+  },
+  "documents": [
+    {
+      "id": "hvac-text",
+      "job_id": "1001",
+      "name": "approved_hvac.txt",
+      "fixture": "approved_hvac.txt",
+      "users": [
+        "alice",
+        "bob"
+      ],
+      "size": 177
+    },
+    {
+      "id": "hvac-docx",
+      "job_id": "1001",
+      "name": "synthetic_hvac.docx",
+      "fixture": "synthetic_hvac.docx",
+      "users": [
+        "alice",
+        "bob"
+      ],
+      "size": 36995
+    },
+    {
+      "id": "commissioning-folder",
+      "job_id": "1001",
+      "name": "Commissioning",
+      "folder": true,
+      "users": [
+        "alice",
+        "bob"
+      ]
+    },
+    {
+      "id": "commissioning-pdf",
+      "job_id": "1001",
+      "name": "commissioning.pdf",
+      "parent": "commissioning-folder",
+      "path": "Commissioning/commissioning.pdf",
+      "fixture": "commissioning.pdf",
+      "users": [
+        "alice",
+        "bob"
+      ],
+      "size": 1802
+    },
+    {
+      "id": "restricted-text",
+      "job_id": "1001",
+      "name": "restricted_review.txt",
+      "fixture": "restricted_review.txt",
+      "users": [
+        "bob"
+      ],
+      "size": 69
+    },
+    {
+      "id": "injection-text",
+      "job_id": "1001",
+      "name": "injection.txt",
+      "fixture": "injection.txt",
+      "users": [
+        "alice",
+        "bob"
+      ],
+      "size": 144
+    },
+    {
+      "id": "nda-text",
+      "job_id": "1002",
+      "name": "excluded_nda.txt",
+      "fixture": "excluded_nda.txt",
+      "users": [
+        "alice",
+        "bob"
+      ],
+      "size": 122
+    },
+    {
+      "id": "other-text",
+      "job_id": "1003",
+      "name": "other_job.txt",
+      "fixture": "other_job.txt",
+      "users": [
+        "bob"
+      ],
+      "size": 30
+    }
+  ]
+}

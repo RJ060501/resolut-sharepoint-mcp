@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "resolut-sharepoint-mcp"
+version = "0.1.0"
+description = "IT-owned, read-only Claude connector restricted to approved SharePoint job sites"
+requires-python = ">=3.12,<3.15"
+dynamic = ["dependencies", "optional-dependencies"]
+
+[project.scripts]
+resolut-mcp = "resolut_mcp.cli:main"
+resolut-registry = "resolut_mcp.admin:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
+optional-dependencies = {dev = {file = ["requirements-dev.txt"]}}
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+addopts = "-ra"
+markers = ["sdk: requires installed official MCP SDK", "live: requires explicitly authorized Microsoft/Claude environment"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"

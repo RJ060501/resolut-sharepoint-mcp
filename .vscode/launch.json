@@ -1,0 +1,7 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {"name": "Local mock connector", "type": "debugpy", "request": "launch", "module": "resolut_mcp", "args": ["serve"], "envFile": "${workspaceFolder}/.env", "justMyCode": true},
+    {"name": "Synthetic policy demo", "type": "debugpy", "request": "launch", "module": "resolut_mcp", "args": ["demo"], "envFile": "${workspaceFolder}/.env", "justMyCode": true}
+  ]
+}

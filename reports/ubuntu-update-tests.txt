@@ -1,0 +1,14 @@
+........................................................................ [ 58%]
+.........................................ssssssssss                      [100%]
+=========================== short test summary info ============================
+SKIPPED [1] tests/test_sdk_http.py:46: Official mcp package unavailable in this offline build environment
+SKIPPED [1] tests/test_sdk_http.py:53: Official mcp package unavailable in this offline build environment
+SKIPPED [1] tests/test_sdk_http.py:58: Official mcp package unavailable in this offline build environment
+SKIPPED [1] tests/test_sdk_http.py:66: Official mcp package unavailable in this offline build environment
+SKIPPED [1] tests/test_sdk_http.py:76: Official mcp package unavailable in this offline build environment
+SKIPPED [1] tests/test_sdk_http.py:83: Official mcp package unavailable in this offline build environment
+SKIPPED [1] tests/test_sdk_http.py:92: Official mcp package unavailable in this offline build environment
+SKIPPED [1] tests/test_sdk_http.py:100: Official mcp package unavailable in this offline build environment
+SKIPPED [1] tests/test_sdk_http.py:108: Official mcp package unavailable in this offline build environment
+SKIPPED [1] tests/test_sdk_http.py:117: MSAL unavailable in offline build; OBO tests inject a fake token client
+113 passed, 10 skipped in 13.56s

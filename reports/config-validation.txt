@@ -1,0 +1,1 @@
+Configuration and registry are valid (mock). Live authorization is NOT verified.

@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "jobs": [
+    {
+      "job_id": "1001",
+      "site_id": "example.sharepoint.com,10000000-0000-4000-8000-000000001001,20000000-0000-4000-8000-000000001001",
+      "site_url": "https://example.sharepoint.com/sites/job1001",
+      "display_name": "Synthetic Job 1001",
+      "decision": "approved",
+      "owner": "Synthetic Project Owner",
+      "approved_by": "Synthetic Reviewer",
+      "approved_at": "2026-01-01T00:00:00Z",
+      "expires_at": null,
+      "notes": "FABRICATED TEST DATA. Not a real approval."
+    },
+    {
+      "job_id": "1002",
+      "site_id": "example.sharepoint.com,10000000-0000-4000-8000-000000001002,20000000-0000-4000-8000-000000001002",
+      "site_url": "https://example.sharepoint.com/sites/job1002",
+      "display_name": "Synthetic Job 1002",
+      "decision": "blocked",
+      "owner": "Synthetic Project Owner",
+      "approved_by": null,
+      "approved_at": null,
+      "expires_at": null,
+      "notes": "FABRICATED TEST DATA. Not a real approval."
+    },
+    {
+      "job_id": "1003",
+      "site_id": "example.sharepoint.com,10000000-0000-4000-8000-000000001003,20000000-0000-4000-8000-000000001003",
+      "site_url": "https://example.sharepoint.com/sites/job1003",
+      "display_name": "Synthetic Job 1003",
+      "decision": "approved",
+      "owner": "Synthetic Project Owner",
+      "approved_by": "Synthetic Reviewer",
+      "approved_at": "2026-01-01T00:00:00Z",
+      "expires_at": null,
+      "notes": "FABRICATED TEST DATA. Not a real approval."
+    },
+    {
+      "job_id": "1004",
+      "site_id": "example.sharepoint.com,10000000-0000-4000-8000-000000001004,20000000-0000-4000-8000-000000001004",
+      "site_url": "https://example.sharepoint.com/sites/job1004",
+      "display_name": "Synthetic Job 1004",
+      "decision": "pending",
+      "owner": "Synthetic Project Owner",
+      "approved_by": null,
+      "approved_at": null,
+      "expires_at": null,
+      "notes": "FABRICATED TEST DATA. Not a real approval."
+    }
+  ]
+}
