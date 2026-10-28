@@ -16,6 +16,7 @@ pytestmark = pytest.mark.sdk
 
 @pytest.fixture
 def client(settings):
+    """Create an authenticated SDK-backed ASGI client or explicitly skip unavailable SDK tests."""
     if importlib.util.find_spec("mcp") is None:
         if os.getenv("REQUIRE_SDK_TESTS") == "1":
             pytest.fail("Required official MCP SDK is not installed; release is blocked.")
@@ -29,6 +30,7 @@ def client(settings):
 
 
 def rpc(client,user,method,params=None,ident=1):
+    """Send one JSON-RPC request to the MCP endpoint using the selected synthetic user."""
     c,tokens=client
     return c.post("/mcp",headers={"Authorization":"Bearer "+tokens[user],
         "Accept":"application/json, text/event-stream", "MCP-Protocol-Version":"2025-11-25"},
@@ -36,6 +38,7 @@ def rpc(client,user,method,params=None,ident=1):
 
 
 def structured(response):
+    """Assert a successful tool response and normalize its structured or text payload."""
     assert response.status_code == 200, response.text
     result=response.json()["result"]
     assert not result.get("isError"),result
@@ -44,6 +47,7 @@ def structured(response):
 
 
 def test_sdk_requires_auth_and_advertises_resource(client):
+    """Require bearer authentication and advertise where clients can obtain resource metadata."""
     c,_=client
     response=c.post("/mcp",json={"jsonrpc":"2.0","id":1,"method":"tools/list"})
     assert response.status_code==401
@@ -51,11 +55,13 @@ def test_sdk_requires_auth_and_advertises_resource(client):
 
 
 def test_sdk_rejects_invalid_bearer(client):
+    """Reject requests carrying a malformed or invalid bearer credential."""
     c,_=client
     assert c.post("/mcp",headers={"Authorization":"Bearer wrong"},json={}).status_code==401
 
 
 def test_sdk_protected_resource_metadata(client,settings):
+    """Expose the configured MCP resource URL and supported OAuth scope in metadata."""
     c,_=client
     r=c.get("/.well-known/oauth-protected-resource/mcp")
     assert r.status_code==200
@@ -64,6 +70,7 @@ def test_sdk_protected_resource_metadata(client,settings):
 
 
 def test_sdk_initialization_and_tools(client):
+    """Verify SDK initialization and the names and read-only annotations of exposed tools."""
     r=rpc(client,"alice","initialize",{"protocolVersion":"2025-11-25","capabilities":{},
         "clientInfo":{"name":"local-acceptance","version":"0.1"}})
     assert r.status_code==200 and "serverInfo" in r.json()["result"]
@@ -74,6 +81,7 @@ def test_sdk_initialization_and_tools(client):
 
 
 def test_sdk_lists_different_jobs_for_different_users(client):
+    """Ensure each caller sees only the approved jobs available to their identity."""
     a=structured(rpc(client,"alice","tools/call",{"name":"list_approved_jobs","arguments":{}}))
     b=structured(rpc(client,"bob","tools/call",{"name":"list_approved_jobs","arguments":{}}))
     assert {j["job_id"] for j in a["jobs"]}=={"1001"}
@@ -81,6 +89,7 @@ def test_sdk_lists_different_jobs_for_different_users(client):
 
 
 def test_sdk_search_and_read(client):
+    """Exercise document search followed by an authorized read through the SDK transport."""
     found=structured(rpc(client,"alice","tools/call",{"name":"search_approved_documents",
         "arguments":{"query":"approved_hvac","job_id":"1001"}}))
     identifier=found["results"][0]["document_id"]
@@ -90,6 +99,7 @@ def test_sdk_search_and_read(client):
 
 
 def test_sdk_excluded_site_is_safe_tool_error(client):
+    """Return a generic tool error for excluded content without leaking fixture identifiers."""
     r=rpc(client,"alice","tools/call",{"name":"search_approved_documents",
         "arguments":{"query":"CANARY","job_id":"1002"}})
     result=r.json()["result"]
@@ -98,6 +108,7 @@ def test_sdk_excluded_site_is_safe_tool_error(client):
 
 
 def test_sdk_rejects_untrusted_origin(client):
+    """Reject a cross-origin request from an origin not trusted by the MCP application."""
     c,tokens=client
     r=c.post("/mcp",headers={"Authorization":"Bearer "+tokens["alice"],
          "Origin":"https://attacker.invalid","Accept":"application/json, text/event-stream"},
@@ -106,12 +117,14 @@ def test_sdk_rejects_untrusted_origin(client):
 
 
 def test_sdk_health_is_not_live_authorization_proof(client):
+    """Distinguish process health and policy readiness from proof of live authorization."""
     c,_=client
     assert c.get("/healthz").json()["mode"]=="mock"
     assert c.get("/readyz").json()["scope"]=="process_and_policy_only"
 
 
 def test_actual_msal_library_import():
+    """Require the real MSAL API for release testing while allowing explicit offline skips."""
     if importlib.util.find_spec("msal") is None:
         if os.getenv("REQUIRE_SDK_TESTS")=="1": pytest.fail("MSAL missing; release is blocked.")
         pytest.skip("MSAL unavailable in offline build; OBO tests inject a fake token client")

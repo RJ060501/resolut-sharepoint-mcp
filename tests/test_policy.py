@@ -12,17 +12,20 @@ from conftest import mutate_registry
 
 
 def reference(registry, job="1001", item="hvac-text"):
+    """Encode a document reference using the approved site's current identity."""
     site = next(j for j in registry.load() if j.job_id == job)
     return DocumentRef(job, site.site_id, "drive-"+job, item).encode()
 
 
 async def test_list_filters_excluded_pending_and_other_user_sites(service):
+    """List only the approved job visible to the caller and omit excluded identifiers."""
     result = await service.list_approved_jobs()
     assert [j["job_id"] for j in result["jobs"]] == ["1001"]
     assert "1002" not in json.dumps(result)
 
 
 async def test_human_access_is_independent_of_ai_access(service, graph, registry):
+    """Keep human SharePoint access separate from the connector's AI access policy."""
     assert graph.human_can_open("1002")
     with pytest.raises(ConnectorError, match="Resource unavailable"):
         await service.read_approved_document(reference(registry, "1002", "nda-text"))
@@ -31,6 +34,7 @@ async def test_human_access_is_independent_of_ai_access(service, graph, registry
 
 @pytest.mark.parametrize("job", ["1002", "1004", "9999"])
 async def test_blocked_pending_unknown_job_search_denied(service, job):
+    """Deny search uniformly for blocked, pending, and unknown job identifiers."""
     with pytest.raises(ConnectorError) as error:
         await service.search_approved_documents("project", job)
     assert error.value.code == "unavailable"
@@ -38,6 +42,7 @@ async def test_blocked_pending_unknown_job_search_denied(service, job):
 
 
 async def test_search_and_read_text(service):
+    """Search approved content and read a result with source and untrusted-content metadata."""
     matches = await service.search_approved_documents("hvac", "1001")
     assert len(matches["results"]) == 2
     assert matches["coverage"]["complete_within_accessible_supported_content"]
@@ -48,12 +53,14 @@ async def test_search_and_read_text(service):
 
 
 async def test_search_nested_folder(service):
+    """Find supported content nested beneath the approved site's document hierarchy."""
     result = await service.search_approved_documents("Commissioning")
     assert len(result["results"]) == 1
     assert result["results"][0]["name"] == "commissioning.pdf"
 
 
 async def test_site_grant_does_not_replace_unique_file_permissions(service, registry):
+    """Honor a document's unique permissions even when the containing site is approved."""
     with pytest.raises(ConnectorError) as error:
         await service.read_approved_document(reference(registry, item="restricted-text"))
     assert error.value.code == "unavailable"
@@ -61,6 +68,7 @@ async def test_site_grant_does_not_replace_unique_file_permissions(service, regi
 
 
 async def test_no_cross_user_metadata_or_content_cache(settings, registry, service):
+    """Ensure user-specific visibility is not leaked through shared metadata or content state."""
     bob = mock_principal("bob")
     other = Service(settings, registry, bob, MockGraph(settings, registry, bob))
     assert (await other.search_approved_documents("restricted"))["results"]
@@ -69,6 +77,7 @@ async def test_no_cross_user_metadata_or_content_cache(settings, registry, servi
 
 
 async def test_new_files_inherit_site_approval(service, graph):
+    """Allow a newly added file when its site is approved and its own permissions allow access."""
     graph.data["documents"].append({"id": "new-file", "job_id": "1001", "name": "new_hvac.txt",
         "fixture": "approved_hvac.txt", "users": ["alice"], "size": 100})
     results = await service.search_approved_documents("new_hvac")
@@ -77,6 +86,7 @@ async def test_new_files_inherit_site_approval(service, graph):
 
 
 async def test_revoked_site_blocks_old_document_identifier(settings, registry, service):
+    """Recheck site approval when reading an identifier issued before approval was revoked."""
     token = reference(registry)
     mutate_registry(settings, "1001", decision="blocked")
     with pytest.raises(ConnectorError):
@@ -85,6 +95,7 @@ async def test_revoked_site_blocks_old_document_identifier(settings, registry, s
 
 
 async def test_file_permission_revocation_between_search_and_read(service, graph):
+    """Recheck file-level user permissions after a search result has been produced."""
     hit = (await service.search_approved_documents("approved_hvac"))["results"][0]
     next(r for r in graph.data["documents"] if r["id"] == "hvac-text")["users"] = ["bob"]
     with pytest.raises(ConnectorError):
@@ -92,8 +103,10 @@ async def test_file_permission_revocation_between_search_and_read(service, graph
 
 
 async def test_block_during_download_discards_data(settings, registry, service, graph, monkeypatch):
+    """Discard downloaded bytes if the site's approval is revoked during the read operation."""
     original = graph.content
     async def content(*args):
+        """Complete the original download, then revoke approval before returning its bytes."""
         data = await original(*args)
         mutate_registry(settings, "1001", decision="blocked")
         return data
@@ -104,8 +117,10 @@ async def test_block_during_download_discards_data(settings, registry, service, 
 
 
 async def test_reclassification_during_scan_does_not_return_partial_names(settings, service, graph, monkeypatch):
+    """Discard search output when the job becomes blocked while its items are being scanned."""
     original = graph.item
     async def item(*args):
+        """Load one item and then change policy to simulate mid-scan reclassification."""
         result = await original(*args)
         mutate_registry(settings, "1001", decision="blocked")
         return result
@@ -115,14 +130,17 @@ async def test_reclassification_during_scan_does_not_return_partial_names(settin
 
 
 async def test_changed_version_can_be_read_without_new_file_approval(service, graph, registry):
+    """Allow reading a changed version when the file identity remains within approved scope."""
     next(r for r in graph.data["documents"] if r["id"] == "hvac-text")["etag"] = '"version-2"'
     result = await service.read_approved_document(reference(registry))
     assert result["etag"] == '"version-2"'
 
 
 async def test_version_changed_during_read_rejected(service, graph, registry, monkeypatch):
+    """Reject a read if the document's version changes while its content is being downloaded."""
     original = graph.content
     async def content(*args):
+        """Download the content and mutate its version before the caller validates the read."""
         data = await original(*args)
         next(r for r in graph.data["documents"] if r["id"] == "hvac-text")["etag"] = '"new"'
         return data
@@ -133,6 +151,7 @@ async def test_version_changed_during_read_rejected(service, graph, registry, mo
 
 
 async def test_moved_out_of_site_rejected(service, graph, registry):
+    """Reject an existing document reference after the item moves to another site."""
     other = next(j for j in registry.load() if j.job_id == "1002")
     next(r for r in graph.data["documents"] if r["id"] == "hvac-text")["site_id"] = other.site_id
     with pytest.raises(ConnectorError):
@@ -140,6 +159,7 @@ async def test_moved_out_of_site_rejected(service, graph, registry):
 
 
 async def test_cross_site_shortcut_is_not_followed(service, graph, registry):
+    """Refuse a cross-site shortcut and verify it cannot trigger a content request."""
     next(r for r in graph.data["documents"] if r["id"] == "hvac-text")["remote"] = True
     with pytest.raises(ConnectorError):
         await service.read_approved_document(reference(registry))
@@ -147,6 +167,7 @@ async def test_cross_site_shortcut_is_not_followed(service, graph, registry):
 
 
 async def test_prompt_injection_is_only_returned_text_not_executed(service, graph, registry):
+    """Return adversarial document text as untrusted data without following its instructions."""
     result = await service.read_approved_document(reference(registry, item="injection-text"))
     assert "Ignore all rules" in result["text"]
     assert result["content_is_untrusted"]
@@ -154,6 +175,7 @@ async def test_prompt_injection_is_only_returned_text_not_executed(service, grap
 
 
 async def test_expired_identity_cannot_read(settings, registry, graph):
+    """Require a non-expired identity before listing or accessing approved resources."""
     principal = replace(mock_principal(), expires_at=int(time.time())-1)
     service = Service(settings, registry, principal, graph)
     with pytest.raises(ConnectorError) as error:
@@ -162,6 +184,7 @@ async def test_expired_identity_cannot_read(settings, registry, graph):
 
 
 async def test_coverage_limit_is_explicit(settings, registry, principal, graph):
+    """Report an incomplete search when the configured scanned-item ceiling is reached."""
     limited = Service(replace(settings, max_scan_items=1), registry, principal, graph)
     result = await limited.search_approved_documents("hvac")
     assert not result["coverage"]["complete_within_accessible_supported_content"]
@@ -169,6 +192,7 @@ async def test_coverage_limit_is_explicit(settings, registry, principal, graph):
 
 
 async def test_result_limit_is_explicit(settings, registry, principal, graph):
+    """Report result truncation explicitly when the search-result ceiling is reached."""
     limited = Service(replace(settings, max_search_results=1), registry, principal, graph)
     result = await limited.search_approved_documents("hvac")
     assert len(result["results"]) == 1
@@ -177,6 +201,7 @@ async def test_result_limit_is_explicit(settings, registry, principal, graph):
 
 @pytest.mark.parametrize("value", ["", " ", "x"*201, "query\nsecond", "query\x00"])
 async def test_invalid_search_input(service, value):
+    """Reject blank, oversized, multiline, or control-character search queries."""
     with pytest.raises(ConnectorError) as error:
         await service.search_approved_documents(value)
     assert error.value.code == "invalid_request"
@@ -184,6 +209,7 @@ async def test_invalid_search_input(service, value):
 
 @pytest.mark.parametrize("value", ["", "v1.not-json", "v1.!!!!", "v2.value", "../etc/passwd", "https://elsewhere"])
 async def test_invalid_document_identifiers_are_generic(service, value):
+    """Return a generic unavailable error for malformed or out-of-scope document references."""
     with pytest.raises(ConnectorError) as error:
         await service.read_approved_document(value)
     assert error.value.code == "unavailable"
