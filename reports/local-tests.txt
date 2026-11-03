@@ -1,3 +1,6 @@
+Note: Readable local test summary for the application validation suite.
+Tied to: auth, Graph, policy, extraction, admin, and SDK gating checks.
+
 ........................................................................ [ 58%]
 .........................................ssssssssss                      [100%]
 =========================== short test summary info ============================

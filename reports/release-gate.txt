@@ -1,3 +1,6 @@
+Note: Release readiness gate output for official SDK/MSAL verification.
+Tied to: production validation and the external MCP/MSAL integration gate.
+
 Missing mcp; install requirements before release.
 
 Exit status: 1 (expected failure while MCP/MSAL are unavailable)

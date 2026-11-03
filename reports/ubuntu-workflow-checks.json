@@ -1,4 +1,5 @@
 {
+  "note": "Ubuntu workflow verification results for the setup script and environment preflight. Tied to: scripts/setup_ubuntu.sh and the Linux environment bootstrap checks.",
   "bash syntax": {
     "returncode": 0,
     "expected": 0,

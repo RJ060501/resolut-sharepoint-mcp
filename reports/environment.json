@@ -1,4 +1,5 @@
 {
+  "note": "Environment snapshot for runtime and dependency compatibility. Tied to: Python runtime, auth, HTTP, extraction, and tooling dependencies.",
   "recorded_at_utc": "2026-10-22T03:31:21.499501+00:00",
   "python": "3.13.5 (main, Jul 15 2026, 20:25:40) [GCC 14.2.0]",
   "platform": "Linux-6.18.55-x86_64-with-glibc2.41",

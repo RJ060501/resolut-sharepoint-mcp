@@ -1,1 +1,5 @@
-Configuration and registry are valid (mock). Live authorization is NOT verified.
+Note: Validation report for application configuration and registry state.
+Tied to: config startup validation and registry enforcement in the app.
+
+Configuration and registry are valid (mock).
+Live authorization is NOT verified.

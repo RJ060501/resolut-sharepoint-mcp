@@ -1,3 +1,6 @@
+Note: Synthetic demo output for policy and document-access behavior.
+Tied to: policy enforcement, approved-site discovery, and extraction flows.
+
 SYNTHETIC POLICY DEMO -- no Microsoft, Claude, or MCP transport calls
 Human Alice can open excluded job 1002: True
 {
